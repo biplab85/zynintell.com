@@ -1,0 +1,77 @@
+// ==========================================================================
+// Mixins — reusable behaviour ("methods")
+// ==========================================================================
+@use "sass:map";
+@use "sass:string";
+@use "variables" as *;
+
+// Responsive: @include mq(mobile) { ... }
+@mixin mq($name) {
+  @media (max-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin flex-center($inline: false) {
+  @if $inline { display: inline-flex; } @else { display: flex; }
+  align-items: center;
+}
+
+@mixin grid-center {
+  display: grid;
+  place-items: center;
+}
+
+@mixin circle($size) {
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+}
+
+@mixin glass($bg: rgba(255, 255, 255, .14), $blur: 10px, $saturate: 100%) {
+  background: $bg;
+  backdrop-filter: blur($blur) saturate($saturate);
+  -webkit-backdrop-filter: blur($blur) saturate($saturate);
+}
+
+@mixin cover($ratio: null) {
+  width: 100%;
+  object-fit: cover;
+  @if $ratio { aspect-ratio: string.unquote($ratio); }
+}
+
+@mixin absolute-center($extra-transform: null) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) $extra-transform;
+}
+
+// Image that zooms when the given parent is hovered
+@mixin hover-zoom($parent, $scale: 1.06) {
+  transition: transform .7s ease;
+  #{$parent}:hover & { transform: scale($scale); }
+}
+
+@mixin heading($size, $weight: 600) {
+  font-family: $font-primary;
+  font-size: $size;
+  font-weight: $weight;
+}
+
+// Horizontal snap carousel used on phones
+@mixin swipe-row($item-width: 82%, $gap: 14px) {
+  display: grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: $item-width;
+  gap: $gap;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin: 0 (-$gutter-mobile);
+  padding: 0 $gutter-mobile 6px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+  > * { scroll-snap-align: start; }
+}

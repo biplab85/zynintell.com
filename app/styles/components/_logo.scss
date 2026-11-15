@@ -1,0 +1,111 @@
+@use "../abstracts" as *;
+
+// Logo: mark (components/Logo.js) + two-weight wordmark.
+
+$logo-ease: cubic-bezier(.22, 1, .36, 1);
+
+@keyframes logo-draw { to { stroke-dashoffset: 0; } }
+
+@keyframes logo-node-in {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+@keyframes logo-node-pulse {
+  0%, 100% { opacity: .18; transform: scale(.8); }
+  50% { opacity: .38; transform: scale(1.15); }
+}
+
+// Sheen crosses the tile once, then rests for the rest of the cycle
+@keyframes logo-shine {
+  0%, 72% { transform: translateX(0) rotate(20deg); }
+  86%, 100% { transform: translateX(72px) rotate(20deg); }
+}
+
+.logo {
+  @include flex-center(true);
+  gap: 11px;
+  color: $ink;
+  -webkit-tap-highlight-color: transparent;
+
+  &--light { color: $white; }
+}
+
+.logo-mark {
+  flex-shrink: 0;
+  overflow: visible;
+  filter: drop-shadow(0 6px 12px rgba($ink, .22));
+  transition: transform .5s $logo-ease, filter .5s $logo-ease;
+
+  .logo--light & { filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .5)); }
+}
+
+.logo-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: logo-draw .7s $logo-ease forwards;
+
+  &.s1 { animation-delay: .15s; }
+  &.s2 { animation-delay: .4s; }
+  &.s3 { animation-delay: .65s; }
+}
+
+.logo-node,
+.logo-node-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.logo-node { animation: logo-node-in .6s $logo-ease 1s both; }
+
+.logo-node-glow {
+  opacity: 0;
+  animation: logo-node-pulse 3.2s ease-in-out 1.6s infinite;
+}
+
+.logo-shine {
+  transform-box: view-box;
+  transform-origin: 20px 20px;
+  animation: logo-shine 7s ease-in-out 2s infinite;
+}
+
+// Wordmark: bold "zyn" + regular "intell" + orange full stop
+.logo-word {
+  font-family: $font-primary;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+
+.logo-zyn { font-weight: 700; }
+.logo-intell { font-weight: 400; opacity: .82; }
+.logo-dot {
+  font-weight: 700;
+  color: $primary;
+  display: inline-block;
+  transition: transform .5s $logo-ease;
+}
+
+// Hover: lift + slight tilt, node glows brighter, dot hops
+.logo:hover {
+  .logo-mark {
+    transform: translateY(-1px) rotate(-4deg);
+    filter: drop-shadow(0 10px 18px rgba($primary, .35));
+  }
+  .logo-node-glow { animation-duration: 1.2s; }
+  .logo-dot { transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-stroke { animation: none; stroke-dashoffset: 0; }
+  .logo-node { animation: none; }
+  .logo-node-glow, .logo-shine { animation: none; }
+}
+
+@include mq(mobile) {
+  .logo { gap: 9px; }
+  .logo-mark { width: 34px; height: 34px; }
+  .logo-word { font-size: 21px; }
+}

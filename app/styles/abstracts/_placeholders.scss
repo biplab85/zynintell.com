@@ -1,0 +1,56 @@
+// ==========================================================================
+// Placeholders — abstract base "classes" components inherit with @extend
+// ==========================================================================
+@use "variables" as *;
+@use "mixins" as *;
+
+// Rounded pill chip
+%pill {
+  @include flex-center(true);
+  border-radius: $radius-pill;
+}
+
+// Round icon button
+%icon-circle {
+  @include grid-center;
+  border-radius: 50%;
+}
+
+// Card surface
+%card {
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+// Dark rounded section panel
+%dark-panel {
+  position: relative;
+  overflow: hidden;
+  color: $white;
+  border-radius: $radius-section;
+  margin: 0 16px;
+
+  @include mq(mobile) {
+    margin: 0 8px;
+    border-radius: $radius-xl;
+  }
+}
+
+// Author line under quotes/testimonials
+%byline {
+  @include flex-center;
+  gap: 14px;
+
+  img { @include circle(54px); object-fit: cover; }
+  div { text-align: left; }
+  strong { display: block; font-family: $font-primary; }
+  small { color: $gray; }
+}
+
+%section-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+
+  @include mq(tablet) { grid-template-columns: repeat(2, 1fr); }
+}

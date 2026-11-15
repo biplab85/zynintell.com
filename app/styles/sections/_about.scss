@@ -1,0 +1,148 @@
+@use "../abstracts" as *;
+
+.about {
+  background: $soft;
+
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  &-media { position: relative; aspect-ratio: 9 / 10; }
+
+  @include mq(tablet) {
+    &-grid { grid-template-columns: 1fr; gap: 44px; }
+  }
+
+  @include mq(mobile) {
+    &-grid { gap: 28px; }
+    .btn { width: 100%; justify-content: center; }
+  }
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin: 36px 0;
+
+  @include mq(mobile) { gap: 12px; margin: 24px 0; }
+}
+
+.stat {
+  background: $white;
+  border-radius: $radius;
+  padding: 24px;
+
+  strong {
+    display: block;
+    font-family: $font-primary;
+    font-size: 46px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  &:nth-child(odd) strong { color: $primary; }
+  span { color: $gray; font-size: 15px; }
+
+  @include mq(mobile) {
+    padding: 18px;
+    border-radius: 18px;
+    strong { font-size: 34px; }
+  }
+}
+
+// ==========================================================================
+// About image mask: leaf corners (big top-left / bottom-right curves) and a
+// circular cut-out top-right that holds the rotating badge.
+// Box 900x1000; cut-out = circle r220 centred on the top-right corner.
+// ==========================================================================
+$about-shape: "M0 260Q0 0 260 0H680A220 220 0 0 0 900 220V740Q900 1000 640 1000H120Q0 1000 0 880Z";
+$about-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1000' preserveAspectRatio='none'><path d='#{$about-shape}'/></svg>");
+$badge-size: 34%; // of image width; cut-out radius is 24.4%, leaving a ring of space
+
+@keyframes about-spin { to { transform: rotate(360deg); } }
+
+.about-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  mask: $about-mask no-repeat 0 0 / 100% 100%;
+  -webkit-mask: $about-mask no-repeat 0 0 / 100% 100%;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .about-media:hover & img { transform: scale(1.05); }
+}
+
+// Dot-grid patch peeking out behind the bottom-left
+.about-dots {
+  position: absolute;
+  z-index: 0;
+  left: -28px;
+  bottom: -28px;
+  width: 46%;
+  height: 34%;
+  border-radius: $radius;
+  background-image: radial-gradient(rgba($primary, .45) 1.6px, transparent 1.6px);
+  background-size: 16px 16px;
+}
+
+// Badge centred on the top-right corner, inside the cut-out
+.about-badge {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  width: $badge-size;
+  aspect-ratio: 1;
+  transform: translate(42%, -42%);
+  @include grid-center;
+  border-radius: 50%;
+  background: $white;
+  box-shadow: 0 20px 40px -18px rgba($ink, .35);
+}
+
+.about-badge-text {
+  position: absolute;
+  inset: 6%;
+  width: 88%;
+  height: 88%;
+  animation: about-spin 18s linear infinite;
+
+  text {
+    font-family: $font-primary;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    fill: $ink;
+  }
+}
+
+.about-badge-core {
+  @include grid-center;
+  width: 38%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: $ink;
+  transition: transform .6s cubic-bezier(.34, 1.56, .64, 1);
+
+  svg path { fill: $primary; }
+  .about-media:hover & { transform: rotate(90deg) scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-badge-text { animation: none; }
+}
+
+@include mq(mobile) {
+  .about-dots { left: -10px; bottom: -10px; }
+  // Keep the badge inside the screen edge on phones
+  .about-badge { width: 30%; transform: translate(18%, -30%); }
+}

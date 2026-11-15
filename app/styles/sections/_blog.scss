@@ -1,0 +1,62 @@
+@use "../abstracts" as *;
+
+.blog-grid {
+  @extend %section-grid-3;
+
+  @include mq(mobile) { grid-template-columns: 1fr; gap: 12px; }
+}
+
+.post {
+  h3 {
+    @include heading(23px);
+    line-height: 1.25;
+    transition: color .3s;
+  }
+  &:hover h3 { color: $primary; }
+
+  &-img {
+    overflow: hidden;
+    border-radius: $radius;
+    margin-bottom: 18px;
+
+    img {
+      @include cover("10 / 7");
+      @include hover-zoom(".post");
+    }
+  }
+
+  &-meta {
+    @include flex-center;
+    gap: 12px;
+    color: $gray-2;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  // Compact list rows on phones
+  @include mq(mobile) {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 14px;
+    align-items: center;
+    background: $soft;
+    padding: 10px;
+    border-radius: $radius;
+
+    h3 { font-size: 16px; }
+
+    &-img {
+      margin: 0;
+      border-radius: 14px;
+      img { aspect-ratio: 1; }
+    }
+
+    &-meta {
+      font-size: 12px;
+      margin-bottom: 6px;
+      gap: 8px;
+
+      .tag { background: $white; font-size: 11px; padding: 3px 9px; }
+    }
+  }
+}

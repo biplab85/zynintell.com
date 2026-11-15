@@ -1,0 +1,9 @@
+@use "../abstracts" as *;
+
+// Runtime custom properties (used by inline styles in JSX)
+:root {
+  --primary: #{$primary};
+  --ink: #{$ink};
+  --white: #{$white};
+  --bar-h: #{$bar-h};
+}

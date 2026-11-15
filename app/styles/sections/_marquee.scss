@@ -1,0 +1,29 @@
+@use "../abstracts" as *;
+
+.marquee {
+  background: $primary;
+  color: $white;
+  overflow: hidden;
+  padding: 34px 0;
+
+  &-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+  }
+
+  &-group { display: flex; }
+
+  span {
+    @include flex-center(true);
+    gap: 40px;
+    padding-right: 40px;
+    @include heading(clamp(40px, 7vw, 96px));
+    white-space: nowrap;
+    letter-spacing: -0.03em;
+  }
+
+  svg path { fill: $white; }
+
+  @include mq(mobile) { display: none; } // desktop/tablet only
+}

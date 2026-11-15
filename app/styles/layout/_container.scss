@@ -1,0 +1,17 @@
+@use "../abstracts" as *;
+
+.container {
+  width: 100%;
+  max-width: $container-max;
+  margin: 0 auto;
+  padding: 0 $gutter;
+
+  @include mq(mobile) { padding: 0 $gutter-mobile; }
+}
+
+.section {
+  padding: 110px 0;
+
+  @include mq(tablet) { padding: 84px 0; }
+  @include mq(mobile) { padding: 60px 0; }
+}

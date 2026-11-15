@@ -1,0 +1,12 @@
+@use "../abstracts" as *;
+
+// Loaded last so these win over component rules
+.mobile-only { display: none !important; }
+
+@include mq(mobile) {
+  .desktop-only, .desktop-nav { display: none !important; }
+  .mobile-only { display: grid !important; }
+
+  .scroll-x { @include swipe-row; }
+  .members.scroll-x { grid-auto-columns: 58%; gap: 12px; }
+}

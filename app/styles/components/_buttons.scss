@@ -1,0 +1,65 @@
+@use "../abstracts" as *;
+
+// Base button object + colour modifiers
+.btn {
+  @extend %pill;
+  gap: 10px;
+  padding: 15px 26px;
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all .3s ease;
+
+  &.block { width: 100%; justify-content: center; margin-top: 16px; }
+}
+
+@mixin btn-skin($bg, $color, $hover-bg, $hover-color: $color, $border: transparent) {
+  background: $bg;
+  color: $color;
+  border-color: $border;
+  &:hover { background: $hover-bg; color: $hover-color; }
+}
+
+.btn-primary { @include btn-skin($primary, $white, $ink); }
+.btn-dark { @include btn-skin($ink, $white, $primary); }
+.btn-ghost { @include btn-skin(transparent, $ink, $ink, $white, $ink); }
+
+.icon-btn {
+  @include grid-center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 0;
+  background: $soft;
+  color: $ink;
+}
+
+.link-arrow {
+  @include flex-center(true);
+  gap: 6px;
+  font-family: $font-primary;
+  font-weight: 600;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: color .3s;
+
+  &:hover { color: $primary; }
+}
+
+.fb-btn {
+  @extend %pill;
+  gap: 8px;
+  padding: 11px 18px;
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 14px;
+  background: $white;
+  color: $ink;
+  transition: background .3s, color .3s;
+
+  &:hover { background: $facebook; color: $white; }
+
+  @include mq(mobile) { padding: 8px 14px; font-size: 13px; }
+}

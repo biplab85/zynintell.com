@@ -1,0 +1,47 @@
+/*
+ * ==========================================================================
+ * Zynintell — Landing page styles
+ * ==========================================================================
+ *
+ * Name:   Biplab
+ * Email:  biplab.cse.85@gmail.com
+ * Mobile: +8801735927356
+ *
+ * Architecture (object-oriented SCSS):
+ *   abstracts/  tokens, mixins ("methods") and %placeholders ("base classes")
+ *   base/       reset, root custom properties, keyframes
+ *   layout/     container, header, footer, bottom app bar, bottom sheet
+ *   components/ reusable objects: buttons, chips, logo, section head, avatar
+ *   sections/   one partial per page section, each with its own breakpoints
+ *   utilities/  overrides, loaded last
+ * ==========================================================================
+ */
+
+@use "base/root";
+@use "base/reset";
+@use "base/animations";
+
+@use "layout/container";
+@use "layout/header";
+@use "layout/footer";
+@use "layout/bottom-bar";
+@use "layout/sheet";
+
+@use "components/buttons";
+@use "components/chips";
+@use "components/logo";
+@use "components/section-head";
+@use "components/avatar";
+
+@use "sections/hero";
+@use "sections/about";
+@use "sections/work";
+@use "sections/services";
+@use "sections/process";
+@use "sections/team";
+@use "sections/testimonials";
+@use "sections/blog";
+@use "sections/cta-banner";
+@use "sections/marquee";
+
+@use "utilities/utilities";

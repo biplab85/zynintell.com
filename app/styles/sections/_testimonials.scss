@@ -1,0 +1,43 @@
+@use "../abstracts" as *;
+
+.testimonials { background: $soft; }
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+
+  span { color: $gray; font-size: 15px; }
+
+  @include mq(mobile) { align-items: flex-start; }
+}
+
+.stars { display: flex; gap: 2px; }
+
+.t-grid {
+  @extend %section-grid-3;
+  gap: 24px;
+}
+
+.t-card {
+  background: $white;
+  border-radius: $radius-lg;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  p { font-size: 18px; flex: 1; }
+
+  footer {
+    @extend %byline;
+    padding-top: 20px;
+    border-top: 1px solid $line;
+  }
+
+  @include mq(mobile) {
+    padding: 24px;
+    p { font-size: 16px; }
+  }
+}

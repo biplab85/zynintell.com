@@ -1,0 +1,32 @@
+@use "../abstracts" as *;
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  background: $white;
+  color: $ink;
+  font-family: $font-secondary;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+
+  // Phones: the footer reserves room for the floating app bar (layout/_footer.scss)
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+p { margin: 0; }
+
+h1, h2, h3, h4 {
+  font-family: $font-primary;
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}

@@ -1,0 +1,124 @@
+@use "../abstracts" as *;
+
+// Full-bleed CTA. --inset / --radius are driven by scroll in
+// components/CtaBanner.js: the frame starts inset with rounded corners and
+// widens to the screen edges with square corners as it scrolls in.
+
+$serif: "Instrument Serif", Georgia, serif;
+$mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+.cta-banner {
+  position: relative;
+  z-index: 1;
+  padding: 110px 0;
+  background: $white;
+
+  @include mq(tablet) { padding: 84px 0; }
+  @include mq(mobile) { padding: 48px 0; }
+}
+
+.cta-frame {
+  --inset: 24px;
+  --radius: 28px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(560px, 72vh, 780px);
+  overflow: hidden;
+  color: $white;
+  background: $ink;
+  clip-path: inset(0 var(--inset) round var(--radius));
+
+  // Darkening towards the bottom so the copy stays readable
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba($ink, .2) 0%, rgba($ink, .35) 40%, rgba($ink, .9) 100%);
+  }
+
+  @include mq(mobile) {
+    clip-path: none;
+    margin-inline: 12px;
+    border-radius: $radius-xl;
+    min-height: 560px;
+  }
+}
+
+// Taller than the frame so the parallax drift never shows an edge
+.cta-img {
+  position: absolute;
+  inset: -10% 0;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: $container-max;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 32px 64px;
+  padding: 120px clamp(48px, 6vw, 88px) clamp(48px, 6vw, 88px);
+
+  @include mq(tablet) { grid-template-columns: 1fr; }
+  @include mq(mobile) { padding: 120px 24px 32px; }
+}
+
+.cta-label {
+  @include flex-center;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-family: $mono;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .8);
+}
+
+.cta-dot {
+  @include circle(8px);
+  background: $primary;
+  box-shadow: 0 0 0 4px rgba($primary, .25);
+}
+
+.cta-title {
+  @include heading(clamp(42px, 6vw, 96px), 500);
+  line-height: .98;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+
+  em {
+    font-family: $serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: #ffb48f;
+  }
+}
+
+.cta-text {
+  max-width: 44ch;
+  margin-bottom: 28px;
+  font-size: 17px;
+  color: rgba(243, 244, 246, .82);
+}
+
+// Light version of the roll-up button (base in sections/_work.scss)
+.roll-btn--light {
+  background: $white;
+  color: $ink;
+  border-color: $white;
+  padding: 8px 8px 8px 26px;
+  font-size: 16px;
+
+  .roll-btn-icon { @include circle(44px); }
+
+  &:hover { border-color: $white; }
+}

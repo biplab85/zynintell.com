@@ -1,0 +1,282 @@
+@use "../abstracts" as *;
+
+// "Our Process": black two-column band. Left = heading + three fanned,
+// overlapping step cards. Right = quote panel with photo.
+
+$card-overlap: 60px;
+$step-pill-bg: $ink;
+
+.process {
+  background: #000;
+  color: $white;
+  overflow: hidden;
+
+  &-wrap {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+
+  // ---- Left column ----
+  &-left {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    padding: 140px 40px 160px;
+
+    // Background pattern: soft glow + faint grid that fades out
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(60% 50% at 30% 40%, rgba($primary, .16), transparent 70%),
+        linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 56px 56px,
+        linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 70% at 40% 50%, #000 40%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 70% at 40% 50%, #000 40%, transparent 85%);
+      pointer-events: none;
+    }
+
+    > * { position: relative; }
+  }
+
+  &-head {
+    margin: 0 0 60px clamp(0px, 10vw, 196px);
+
+    .section-head { margin-bottom: 0; }
+  }
+
+  &-cards {
+    display: flex;
+  }
+
+  // ---- Right column ----
+  &-right {
+    position: relative;
+    max-width: 630px;
+    padding: 180px 50px 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &-arrow {
+    width: 96px;
+    margin-bottom: 28px;
+
+    path {
+      fill: none;
+      stroke: $primary;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+
+  &-quote {
+    @include heading(clamp(26px, 2.5vw, 35px));
+    line-height: 1.28;
+    color: $white;
+    margin-bottom: 48px;
+  }
+
+  &-author {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    strong { @include heading(22px, 700); }
+    span { color: $gray-2; font-weight: 600; }
+  }
+
+  &-half {
+    position: absolute;
+    top: 96px;
+    left: 0;
+    width: 64px;
+  }
+
+  &-photo {
+    position: relative;
+    align-self: flex-end;
+    width: 260px;
+    margin-top: 48px;
+    border-radius: $radius;
+    overflow: hidden;
+
+    img { @include cover("4 / 3"); }
+
+    // Inner shadow for a slightly inset, framed look
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, .2);
+    }
+  }
+}
+
+// ---- Step cards ----
+.p-card {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: -24px 0 48px -12px rgba(0, 0, 0, .55);
+
+  & + & { margin-left: -$card-overlap; }
+
+  &-content {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 25px;
+  }
+
+  // Card 1: orange with concentric rings. Pill top-left, title bottom.
+  &--1 {
+    background:
+      repeating-radial-gradient(circle at 100% 0%, rgba(255, 255, 255, .09) 0 2px, transparent 2px 34px),
+      linear-gradient(150deg, #ff7a3d, $primary 55%, #d93a00);
+  }
+
+  // Card 2: pale gold with dots. Order flipped: dark title top, pill bottom-right.
+  &--2 {
+    background:
+      radial-gradient(rgba($ink, .12) 1.2px, transparent 1.2px) 0 0 / 18px 18px,
+      linear-gradient(160deg, #fbe3b4, #F4CE86);
+
+    .p-title { color: $ink; order: -1; }
+    .p-step { align-self: flex-end; }
+  }
+
+  // Card 3: photo with dark fade. Pill top-right, title bottom-right.
+  &--3 {
+    background: $ink-2;
+
+    .p-step { align-self: flex-end; }
+    .p-title { align-self: flex-end; text-align: right; }
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, .15) 30%, rgba(0, 0, 0, .8));
+    }
+  }
+
+  &-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// "Step 01": dark pill with a white number chip
+.p-step {
+  @include flex-center(true);
+  gap: 5px;
+  padding: 8px;
+  border-radius: $radius;
+  background: $step-pill-bg;
+  color: $white;
+  font-family: $font-primary;
+  font-weight: 700;
+  line-height: 1;
+
+  b {
+    padding: 2px 7px;
+    border-radius: $radius;
+    background: $white;
+    color: $ink;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+.p-title {
+  @include heading(28px, 700);
+  line-height: 1.28;
+  color: $white;
+  max-width: 200px;
+}
+
+// Small round "next" badge just before the overlap seam
+.p-link {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: $card-overlap + 14px;
+  @extend %icon-circle;
+  @include circle(38px);
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, .25);
+  color: $white;
+  border: 1px solid rgba(255, 255, 255, .35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  .p-card--2 & {
+    background: rgba($ink, .08);
+    color: $ink;
+    border-color: rgba($ink, .2);
+  }
+}
+
+// ---- Large laptops ----
+@media (max-width: 1279px) {
+  .p-title { font-size: 24px; }
+  .process-right { padding: 160px 40px 100px; max-width: 520px; }
+  .process-quote { font-size: 28px; }
+}
+
+// ---- Tablet: stack columns, cards in a plain row (no overlap) ----
+@include mq(tablet) {
+  .process {
+    &-wrap { flex-direction: column; }
+    &-left { padding: 84px 24px 40px; }
+    &-head { margin-left: 0; }
+    &-right { max-width: none; padding: 40px 24px 84px; }
+    &-half { top: 20px; left: auto; right: 24px; }
+  }
+
+  .p-card {
+    box-shadow: none;
+    & + & { margin-left: 16px; }
+  }
+
+  .p-link { display: none; }
+}
+
+// ---- Mobile: cards become a swipe row ----
+@include mq(mobile) {
+  .process {
+    &-left { padding: 60px $gutter-mobile 28px; }
+    &-head { margin-bottom: 28px; }
+    &-cards { @include swipe-row(68%, 12px); }
+    &-right { padding: 28px $gutter-mobile 60px; }
+    &-arrow { width: 72px; margin-bottom: 18px; }
+    &-quote { font-size: 23px; margin-bottom: 28px; }
+    &-author strong { font-size: 19px; }
+    &-half { width: 44px; }
+    &-photo { width: 100%; margin-top: 28px; }
+  }
+
+  .p-card {
+    & + & { margin-left: 0; }
+    &-content { padding: 18px; }
+  }
+
+  .p-title { font-size: 22px; }
+}

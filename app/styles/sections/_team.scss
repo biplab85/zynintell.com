@@ -1,0 +1,215 @@
+@use "../abstracts" as *;
+
+// Dark gallery: leadership cards on top, portrait cards below
+.team {
+  @extend %dark-panel;
+  background: $ink-deep;
+  margin-top: 100px; // breathing room after the black Process band
+
+  @include mq(tablet) { margin-top: 72px; }
+  @include mq(mobile) { margin-top: 48px; }
+
+  .container { position: relative; }
+
+  &-glow {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: .35;
+    pointer-events: none;
+
+    &.g1 { background: $primary; top: -220px; right: -120px; }
+    &.g2 { background: $violet; bottom: -260px; left: -160px; opacity: .18; }
+  }
+
+  &-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+
+    .section-head { margin-bottom: 0; }
+
+    @include mq(mobile) { margin-bottom: 28px; gap: 20px; }
+  }
+
+  &-summary {
+    @include flex-center;
+    gap: 18px;
+    max-width: 440px;
+
+    p {
+      color: rgba(255, 255, 255, .6);
+      font-size: 15px;
+      line-height: 1.5;
+      @include mq(mobile) { font-size: 14px; }
+    }
+    strong { color: $white; }
+  }
+
+  &-stack { display: flex; flex-shrink: 0; }
+}
+
+// ---- Leadership ----
+.leaders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+
+  @include mq(tablet) { grid-template-columns: 1fr; }
+  @include mq(mobile) { gap: 12px; margin-bottom: 14px; }
+}
+
+.leader {
+  position: relative;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 30px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02));
+  border: 1px solid rgba(255, 255, 255, .09);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+  transition: border-color .4s ease, transform .4s ease;
+
+  &:hover {
+    border-color: rgba($primary-light, .45);
+    transform: translateY(-4px);
+  }
+
+  h3 { @include heading(clamp(26px, 2.6vw, 36px)); margin-bottom: 8px; }
+
+  &-photo {
+    aspect-ratio: 4 / 5;
+    border-radius: 22px;
+    overflow: hidden;
+
+    .fill { @include hover-zoom(".leader"); }
+  }
+
+  &-body { padding-right: 18px; }
+
+  &-badge {
+    @extend %pill;
+    gap: 6px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    color: $primary-soft;
+    background: rgba($primary, .12);
+    border: 1px solid rgba($primary, .3);
+  }
+
+  &-role {
+    display: block;
+    font-family: $font-primary;
+    font-size: 18px;
+    color: rgba(255, 255, 255, .6);
+    margin-bottom: 26px;
+  }
+
+  @include mq(mobile) {
+    grid-template-columns: 116px 1fr;
+    gap: 16px;
+    padding: 10px;
+    border-radius: $radius-lg;
+
+    h3 { font-size: 21px; margin-bottom: 2px; }
+    &-photo { border-radius: 18px; }
+    &-body { padding-right: 6px; }
+    &-badge { margin-bottom: 10px; font-size: 10px; padding: 4px 9px; }
+    &-role { font-size: 14px; margin-bottom: 12px; }
+  }
+}
+
+// ---- Members ----
+.members {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.person {
+  @extend %card;
+  position: relative;
+  aspect-ratio: 4 / 5;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, .08);
+
+  .fill {
+    position: absolute;
+    inset: 0;
+    filter: grayscale(.35) contrast(1.05);
+    transition: transform .8s ease, filter .6s ease;
+  }
+
+  &:hover .fill { transform: scale(1.07); filter: none; }
+
+  h3 { @include heading(21px); margin-bottom: 4px; }
+
+  &-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba($ink-deep, 0) 45%, rgba($ink-deep, .92) 100%);
+  }
+
+  &-info {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 22px;
+
+    // Orange accent line that grows on hover
+    &::before {
+      content: "";
+      display: block;
+      width: 28px;
+      height: 3px;
+      border-radius: 3px;
+      background: $primary;
+      margin-bottom: 12px;
+      transition: width .4s ease;
+    }
+
+    span { font-size: 14px; color: rgba(255, 255, 255, .7); }
+  }
+
+  &:hover &-info::before { width: 56px; }
+
+  &-fb {
+    @extend %icon-circle;
+    @include circle(38px);
+    @include glass(rgba(255, 255, 255, .14), 10px);
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    color: $white;
+    border: 1px solid rgba(255, 255, 255, .2);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all .35s ease;
+
+    &:hover { background: $facebook; border-color: $facebook; }
+  }
+
+  &:hover &-fb, &-fb:focus-visible { opacity: 1; transform: none; }
+
+  @include mq(mobile) {
+    border-radius: $radius;
+
+    .fill { filter: none; }
+    h3 { font-size: 17px; }
+    &-info { padding: 16px; }
+    &-fb { opacity: 1; transform: none; @include circle(34px); }
+  }
+}
