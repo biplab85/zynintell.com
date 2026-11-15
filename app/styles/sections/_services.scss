@@ -1,12 +1,13 @@
 @use "sass:map";
 @use "../abstracts" as *;
 
-// Editorial service list. Hovering a row turns the title orange, fills the
-// button, and slides a photo in from the left. On mouse-out the colours ease
-// back but the photo vanishes instantly (the base state has no transition).
+// "What We Do": bento grid of service cards on a warm gradient with a tech
+// backdrop. A light follows the cursor along each card's border (--mx/--my are
+// set by onSpotlight in app/page.js); cards lift and their photos zoom on hover.
 
-$ease-out-quad: cubic-bezier(.25, .46, .45, .94);
-$svc-image-w: 240px;
+$ease-soft: cubic-bezier(.22, 1, .36, 1);
+$serif: "Instrument Serif", Georgia, serif;
+$mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
 .services {
   position: relative;
@@ -21,161 +22,367 @@ $svc-image-w: 240px;
     align-items: flex-end;
     gap: 24px;
     flex-wrap: wrap;
-    margin-bottom: 60px;
+    margin-bottom: 56px;
 
-    .section-head { margin-bottom: 0; }
     .muted { max-width: 380px; }
 
-    @include mq(mobile) { margin-bottom: 28px; }
-  }
-}
+    &-side { display: grid; gap: 18px; justify-items: start; }
 
-.svc-list {
-  border-bottom: 1px solid $line;
-  overflow: hidden; // keeps the parked (off-screen) photos from causing page scroll
-}
-
-.svc-row {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr $svc-image-w;
-  gap: 24px;
-  align-items: start;
-  padding: 48px 0;
-  border-top: 1px solid $line;
-
-  // Text layer sits above the photo
-  > :not(.svc-image) { position: relative; z-index: 1; }
-}
-
-.svc-title {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  max-width: 380px;
-}
-
-.svc-icon {
-  @include grid-center;
-  flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: $soft;
-  color: $primary;
-  transition: background .4s $ease-out-quad, color .4s $ease-out-quad;
-}
-
-.svc-name {
-  @include heading(28px, 700);
-  line-height: 1.28;
-  color: $ink;
-  transition: color .4s $ease-out-quad;
-}
-
-.svc-details {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 400px;
-
-  p { color: $gray; }
-}
-
-.svc-tags {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-
-  li {
-    font-family: $font-primary;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1;
-    color: $ink;
-
-    &::before { content: "+ "; color: $primary; }
-  }
-}
-
-// Photo: parked far left, transparent and tilted. No transition here, so
-// leaving the row snaps it straight back out of view.
-.svc-image {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 0; // absolute grid child: positioned inside its grid-column (3)
-  grid-column: 3;
-  width: $svc-image-w;
-  aspect-ratio: 4 / 3;
-  border-radius: $radius;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-360%, -50%) rotate(-12deg);
-  box-shadow: 0 24px 50px -18px rgba($ink, .45);
-
-  img { @include cover; height: 100%; }
-}
-
-// ---- Hover state (desktop pointers only) ----
-@media (hover: hover) and (min-width: map.get($breakpoints, mobile) + 1) {
-  .svc-row:hover {
-    .svc-name { color: $primary; }
-    .svc-icon { background: $primary; color: $white; }
-
-    .svc-image {
-      opacity: 1;
-      transform: translate(0, -50%) rotate(0deg);
-      transition: transform .5s $ease-out-quad, opacity .5s $ease-out-quad;
+    @include mq(mobile) {
+      margin-bottom: 28px;
+      &-side { gap: 12px; }
     }
   }
 }
 
-// ---- Tablet: drop the image column ----
-@include mq(tablet) {
-  .svc-row { grid-template-columns: 1fr 1fr; }
-  .svc-image { display: none; }
+// ---- Header ----
+.svc-eyebrow {
+  @include flex-center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-family: $mono;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: $gray;
 }
 
-// ---- Mobile: stacked app-style cards ----
-@include mq(mobile) {
-  .svc-list { border-bottom: 0; display: grid; gap: 12px; }
+.svc-eyebrow-dot {
+  @include circle(8px);
+  background: $primary;
+  box-shadow: 0 0 0 4px rgba($primary, .18);
+}
 
-  .svc-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 22px;
-    border: 0;
-    border-radius: $radius;
-    background: $soft;
+.svc-heading {
+  @include heading(clamp(38px, 5.4vw, 72px), 500);
+  letter-spacing: -0.04em;
+
+  em {
+    font-family: $serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: $primary;
   }
 
-  .svc-title { gap: 14px; align-items: center; }
-  .svc-icon { width: 44px; height: 44px; border-radius: 14px; background: $white; }
-  .svc-name { font-size: 21px; }
-  .svc-details { gap: 14px; p { font-size: 15px; } }
+  @include mq(mobile) { font-size: 38px; }
+}
 
-  .svc-tags {
-    flex-direction: row;
+.svc-count {
+  @include flex-center(true);
+  gap: 10px;
+  font-family: $mono;
+  font-size: 11.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: $gray;
+
+  span {
+    @include grid-center;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: $radius-pill;
+    background: $ink;
+    color: $white;
+  }
+}
+
+// ==========================================================================
+// Bento grid
+// ==========================================================================
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "web  web  web  web  web  web  web  brand brand brand brand brand"
+    "saas saas saas saas ai   ai   ai   ai    ui    ui    ui    ui"
+    "mob  mob  mob  mob  grow grow grow grow  cta   cta   cta   cta";
+  gap: 20px;
+}
+
+.svc-card {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 28px;
+  border: 1px solid transparent;
+  // Card fill + a cursor-following orange glow painted only on the border
+  background:
+    linear-gradient(rgba(255, 255, 255, .88), rgba(255, 255, 255, .88)) padding-box,
+    radial-gradient(340px circle at var(--mx) var(--my), rgba($primary, .75), transparent 45%) border-box,
+    linear-gradient(rgba($ink, .08), rgba($ink, .08)) border-box;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .9) inset,
+    0 30px 60px -42px rgba($ink, .4);
+  transition: transform .6s $ease-soft, box-shadow .6s $ease-soft;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, .9) inset,
+      0 44px 80px -44px rgba($ink, .5);
+  }
+
+  // ---- Photo ----
+  &-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    background: $soft;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1.1s $ease-soft;
+    }
+
+    // Gentle fade so the photo melts into the card
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba($ink, .18));
+    }
+  }
+
+  &:hover &-media img { transform: scale(1.07); }
+
+  // ---- Content ----
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+    padding: 22px 18px 20px;
+  }
+
+  &-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-icon {
+    @include grid-center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    color: $white;
+    background: linear-gradient(145deg, #ff8a4c, $primary);
+    box-shadow: 0 10px 22px -10px rgba($primary, .7), inset 0 1px 0 rgba(255, 255, 255, .35);
+  }
+
+  &-index {
+    font-family: $mono;
+    font-size: 12px;
+    letter-spacing: .08em;
+    color: $gray-2;
+  }
+
+  &-title {
+    @include heading(24px, 700);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: $ink;
+  }
+
+  &-text { color: $gray; font-size: 15px; line-height: 1.6; }
+
+  &-tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 8px 16px;
 
     li {
-      @include flex-center(true); // pill shape (can't @extend inside a media query)
-      border-radius: $radius-pill;
-      font-size: 13px;
-      padding: 7px 12px;
-      background: $white;
-      &::before { content: none; }
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: $font-primary;
+      font-size: 14px;
+      font-weight: 600;
+      color: $ink;
+
+      &::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: $primary;
+        box-shadow: 0 0 0 3px rgba($primary, .15);
+      }
     }
   }
 
+  &-tech {
+    list-style: none;
+    margin: auto 0 0;
+    padding: 14px 0 0;
+    border-top: 1px dashed rgba($ink, .12);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    li {
+      padding: 5px 11px;
+      border-radius: $radius-pill;
+      background: rgba($ink, .045);
+      border: 1px solid rgba($ink, .07);
+      font-family: $mono;
+      font-size: 11.5px;
+      letter-spacing: .02em;
+      color: $ink;
+      transition: background .3s, color .3s, border-color .3s;
+
+      &:hover { background: $white; color: $primary; border-color: rgba($primary, .35); }
+    }
+  }
+
+  // Round arrow button, sitting on the photo's top-right corner
+  &-go {
+    position: absolute;
+    z-index: 2;
+    top: 22px;
+    right: 22px;
+    @include grid-center;
+    @include circle(42px);
+    border: 1px solid rgba($ink, .15);
+    background: $white;
+    color: $ink;
+    transition: background .4s $ease-soft, color .4s $ease-soft, border-color .4s $ease-soft, transform .6s $ease-soft;
+  }
+
+  &:hover &-go {
+    background: $ink;
+    border-color: $ink;
+    color: $white;
+    transform: rotate(45deg);
+  }
 }
 
+// ==========================================================================
+// Variants
+// ==========================================================================
+
+// Featured: Web Development — content left, tall photo right
+.svc-card--web {
+  flex-direction: row;
+
+  .svc-card-media {
+    order: 2;
+    flex: 0 0 44%;
+    aspect-ratio: auto;
+    min-height: 100%;
+  }
+
+  .svc-card-body { padding: 26px 24px 22px; }
+  .svc-card-title { font-size: clamp(28px, 2.6vw, 36px); }
+}
+
+// Signature: AI — dark card with warm glow
+.svc-card--ai {
+  color: $white;
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba($primary, .35), transparent 60%) padding-box,
+    radial-gradient(90% 60% at 0% 100%, rgba($violet, .3), transparent 60%) padding-box,
+    linear-gradient(160deg, #1d1a21, #0f0e11) padding-box,
+    radial-gradient(340px circle at var(--mx) var(--my), rgba($primary, .9), transparent 45%) border-box,
+    linear-gradient(rgba(255, 255, 255, .1), rgba(255, 255, 255, .1)) border-box;
+
+  .svc-card-media::after { background: linear-gradient(180deg, transparent 40%, rgba(15, 14, 17, .7)); }
+  .svc-card-title, .svc-card-tags li { color: $white; }
+  .svc-card-text { color: rgba(255, 255, 255, .65); }
+  .svc-card-index { color: rgba(255, 255, 255, .45); }
+
+  .svc-card-tech {
+    border-top-color: rgba(255, 255, 255, .14);
+    li { background: rgba(255, 255, 255, .06); border-color: rgba(255, 255, 255, .12); color: $white; }
+  }
+
+  .svc-card-go { background: rgba(255, 255, 255, .08); border-color: rgba(255, 255, 255, .25); color: $white; }
+  &:hover .svc-card-go { background: $primary; border-color: $primary; }
+}
+
+// Closing card: orange call to action
+.svc-card--cta {
+  justify-content: flex-end;
+  overflow: hidden;
+  color: $white;
+  background:
+    repeating-radial-gradient(circle at 100% 0%, rgba(255, 255, 255, .08) 0 2px, transparent 2px 34px) padding-box,
+    linear-gradient(150deg, #ff7a3d, $primary 55%, #d93a00) padding-box,
+    radial-gradient(340px circle at var(--mx) var(--my), rgba(255, 255, 255, .9), transparent 45%) border-box,
+    linear-gradient($primary, $primary) border-box;
+
+  .svc-card-body { justify-content: flex-end; gap: 16px; padding: 26px 22px 22px; }
+
+  .svc-card-icon {
+    background: rgba(255, 255, 255, .18);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+    svg path { fill: $white; }
+  }
+
+  .svc-card-title { color: $white; font-size: 28px; }
+  .svc-card-text { color: rgba(255, 255, 255, .85); }
+  .roll-btn { align-self: flex-start; }
+}
+
+// ==========================================================================
+// Responsive
+// ==========================================================================
+@include mq(tablet) {
+  .svc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "web   web"
+      "saas  ai"
+      "brand ui"
+      "mob   grow"
+      "cta   cta";
+    gap: 16px;
+  }
+}
+
+@include mq(mobile) {
+  .svc-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "web" "saas" "ai" "brand" "ui" "mob" "grow" "cta";
+    gap: 14px;
+  }
+
+  .svc-card {
+    border-radius: 24px;
+    padding: 8px;
+    &:hover { transform: none; }
+
+    &-media { border-radius: 18px; }
+    &-body { padding: 18px 14px 16px; gap: 12px; }
+    &-title { font-size: 21px; }
+    &-text { font-size: 14.5px; }
+    &-go { @include circle(38px); top: 18px; right: 18px; }
+  }
+
+  // Featured card stacks like the others on phones
+  .svc-card--web {
+    flex-direction: column;
+
+    .svc-card-media { order: 0; flex: none; aspect-ratio: 16 / 9; min-height: 0; }
+    .svc-card-body { padding: 18px 14px 16px; }
+    .svc-card-title { font-size: 24px; }
+  }
+
+  .svc-card--cta .roll-btn { width: 100%; justify-content: space-between; }
+}
 // ==========================================================================
 // Tech backdrop: gradient glows, dot grid, half-circle accents, drifting icons
 // ==========================================================================
@@ -255,12 +462,4 @@ $svc-image-w: 240px;
   .tech-icon:nth-of-type(n + 10) { display: none; } // keep 6 of the 10 icons on phones (3 half-circles come first)
   .half-circle.hc-1 { width: 54px; top: 40px; right: 6%; }
   .half-circle.hc-3 { display: none; }
-
-  // Frosted cards so the pattern shows through without hurting readability
-  .svc-row {
-    background: rgba(255, 255, 255, .78);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba($ink, .05);
-  }
 }

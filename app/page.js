@@ -5,9 +5,10 @@ import Logo from "@/components/Logo";
 import TechBackdrop from "@/components/TechBackdrop";
 import MockSite from "@/components/MockSite";
 import CtaBanner from "@/components/CtaBanner";
+import TechStack from "@/components/TechStack";
 import {
   IconHome, IconGrid, IconLayers, IconBook, IconChat, IconArrow,
-  IconStar, IconMenu, IconQuote, IconSpark, IconUsers, IconFacebook, IconPhone, IconChart, IconPen,
+  IconStar, IconMenu, IconQuote, IconSpark, IconUsers, IconFacebook, IconPhone, IconChart, IconPen, IconAI, IconCloud, IconWhatsApp, IconArrowUp,
 } from "@/components/Icons";
 
 // Local photos (free Unsplash licence) in /public/images, named after the seed without "zyn-"
@@ -17,6 +18,9 @@ const img = (seed) => `/images/${seed.replace(/^zyn-/, "")}.jpg`;
 // reviews card. Keep in sync with $hero-shape in sections/_hero.scss.
 const HERO_SHAPE =
   "M0 450A450 450 0 0 1 900 450V940Q900 1000 840 1000H560Q500 1000 500 940V870Q500 810 440 810H60Q0 810 0 750Z";
+
+// WhatsApp contact (header + footer)
+const WHATSAPP = { display: "+358 41 5725918", link: "https://wa.me/358415725918" };
 
 // Blog is hidden for now: set to true to bring back the section and its menu link
 const SHOW_BLOG = false;
@@ -34,7 +38,7 @@ const NAV = [
 const TEAM = [
   { name: "Arup Scikit", role: "CEO", photo: "arup.png", facebook: "https://www.facebook.com/arup.muet", hue: 18 },
   { name: "Ismail Hosen", role: "CTO", photo: "ismail.jpg", facebook: "https://www.facebook.com/eng.ismail21", hue: 220 },
-  { name: "Engr Sazzad Hossian", role: "Lead Software Engineer", photo: "sazzad.jpg", facebook: "https://www.facebook.com/sazzad.hosian.5", hue: 260 },
+  { name: "Engr Sazzad Hossian", role: "Lead Software Engineer", photo: "sazzad.png", facebook: "https://www.facebook.com/sazzad.hosian.5", hue: 260 },
   { name: "Khairullah", role: "Senior Software Developer", photo: "khairullah.jpg", facebook: "https://www.facebook.com/khairullahnayan", hue: 200 },
   { name: "Hafiza", role: "Web Developer", photo: "hafiza.jpg", pos: "47% 30%", facebook: "https://www.facebook.com/hafiza.khanam.rima", hue: 330 },
   { name: "Fahamina", role: "Web Developer", photo: "fahamina.jpg", facebook: "https://www.facebook.com/fahaminarbt", hue: 160 },
@@ -70,10 +74,15 @@ const PROJECTS = [
 const SERVICES = [
   { n: "01", title: "Brand Strategy", image: "work-2", icon: IconPen, text: "Positioning, naming and identity systems that make you instantly recognisable.", points: ["Brand audits", "Visual identity", "Voice & messaging"] },
   { n: "02", title: "UI/UX Design", image: "step-2", icon: IconLayers, text: "Interfaces people enjoy using, grounded in research and tested with real users.", points: ["User research", "Wireframes", "Design systems"] },
-  { n: "03", title: "Web Development", image: "step-3", icon: IconGrid, text: "Fast, accessible websites built on modern stacks and easy for your team to edit.", points: ["Next.js & CMS", "Performance", "SEO-ready"] },
-  { n: "04", title: "Mobile Apps", image: "blog-2", icon: IconPhone, text: "Native-feel apps for iOS and Android, from first prototype to store launch.", points: ["Prototyping", "Cross-platform", "App store launch"] },
-  { n: "05", title: "Growth Marketing", image: "work-1", icon: IconChart, text: "Campaigns and analytics that turn attention into measurable revenue.", points: ["Paid social", "Content", "Conversion tuning"] },
+  { n: "03", title: "Web Development", image: "step-3", icon: IconGrid, text: "Fast, accessible websites built on modern stacks and easy for your team to edit.", points: ["Next.js & CMS", "Performance", "SEO-ready"], tech: ["React", "Next.js", "Vue", "Alpine.js", "Laravel", "CodeIgniter", "Node.js", "Tailwind CSS"] },
+  { n: "04", title: "SaaS Application Development", image: "saas", icon: IconCloud, text: "We have hands-on experience building SaaS products end to end, from MVP to scalable, subscription-ready platforms.", points: ["Multi-tenant architecture", "Subscriptions & billing", "Admin dashboards"], tech: ["Laravel", "React", "Vue", "REST & GraphQL APIs", "Stripe", "AWS"] },
+  { n: "05", title: "AI-Powered Solutions", image: "ai", icon: IconAI, text: "Practical AI built into your product: smart assistants, automation and insights that save your team real time.", points: ["AI chatbots & assistants", "Workflow automation", "Data insights"], tech: ["OpenAI", "Claude", "LangChain", "RAG", "Python"] },
+  { n: "06", title: "Mobile Apps", image: "blog-2", icon: IconPhone, text: "Native-feel apps for iOS and Android, from first prototype to store launch.", points: ["Prototyping", "Cross-platform", "App store launch"] },
+  { n: "07", title: "Growth Marketing", image: "work-1", icon: IconChart, text: "Campaigns and analytics that turn attention into measurable revenue.", points: ["Paid social", "Content", "Conversion tuning"] },
 ];
+
+// Bento placement for What We Do (grid-template-areas in sections/_services.scss)
+const SVC_AREA = { "01": "brand", "02": "ui", "03": "web", "04": "saas", "05": "ai", "06": "mob", "07": "grow" };
 
 const STEPS = [
   { n: "01", title: "Discover & Plan Strategy", text: "We dig into your goals, audience and competitors to define what success looks like.", seed: "zyn-step-1" },
@@ -148,6 +157,15 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [barHidden, setBarHidden] = useState(false);
 
+  // Cursor position inside the hovered service card, for its border spotlight
+  const onSpotlight = (e) => {
+    const card = e.target.closest(".svc-card");
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    card.style.setProperty("--my", `${e.clientY - r.top}px`);
+  };
+
   useEffect(() => {
     let lastY = window.scrollY;
     const onScroll = () => {
@@ -184,12 +202,22 @@ export default function Home() {
         <div className="container header-inner">
           <Logo />
           <nav className="desktop-nav">
-            {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className={active === n.id ? "active" : ""}>{n.label}</a>
+            {NAV.map(({ id, label, icon: Icon }) => (
+              <a key={id} href={`#${id}`} className={active === id ? "active" : ""} aria-current={active === id ? "page" : undefined}>
+                <span className="nav-icon"><Icon /></span>
+                {label}
+              </a>
             ))}
           </nav>
-          <a href="#contact" className="btn btn-primary desktop-only">Let&apos;s Talk <IconArrow /></a>
-          <button className="icon-btn mobile-only" aria-label="Menu" onClick={() => setMenuOpen(true)}><IconMenu /></button>
+          <div className="header-actions">
+            <a href={WHATSAPP.link} target="_blank" rel="noopener noreferrer" className="header-phone desktop-only">
+              <span className="header-phone-icon"><IconWhatsApp size={16} /></span>
+              {WHATSAPP.display}
+            </a>
+            <a href="#contact" className="btn btn-primary desktop-only">Let&apos;s Talk <IconArrow /></a>
+            <a href={WHATSAPP.link} target="_blank" rel="noopener noreferrer" className="icon-btn icon-btn--call mobile-only" aria-label={"WhatsApp " + WHATSAPP.display}><IconWhatsApp size={20} /></a>
+            <button className="icon-btn mobile-only" aria-label="Menu" onClick={() => setMenuOpen(true)}><IconMenu /></button>
+          </div>
         </div>
       </header>
 
@@ -350,34 +378,68 @@ export default function Home() {
           <TechBackdrop />
           <div className="container">
             <div className="services-head reveal">
-              <SectionHead eyebrow="Services" title="What We Do." />
-              <p className="muted">Everything you need to launch, grow and stand out online, under one roof.</p>
+              <div>
+                <p className="svc-eyebrow"><span className="svc-eyebrow-dot" />Services</p>
+                <h2 className="svc-heading">What We <em>Do.</em></h2>
+              </div>
+              <div className="services-head-side">
+                <p className="muted">Everything you need to launch, grow and stand out online, under one roof.</p>
+                <p className="svc-count">
+                  <span>{String(SERVICES.length).padStart(2, "0")}</span> services · one dedicated team
+                </p>
+              </div>
             </div>
 
-            <div className="svc-list">
-              {SERVICES.map(({ n, title, text, points, image, icon: Icon }) => (
-                <article key={n} className="svc-row reveal">
-                  <div className="svc-title">
-                    <span className="svc-icon"><Icon /></span>
-                    <h3 className="svc-name">{title}</h3>
-                  </div>
+            {/* Bento grid. A light follows the cursor along each card's border (see onSpotlight). */}
+            <div className="svc-grid" onMouseMove={onSpotlight}>
+              {SERVICES.map(({ n, title, text, points, tech, image, icon: Icon }) => {
+                const area = SVC_AREA[n];
+                return (
+                  <article key={n} className={`svc-card svc-card--${area} reveal`} style={{ gridArea: area }}>
+                    <div className="svc-card-media">
+                      <img src={img(`zyn-${image}`)} alt="" loading="lazy" />
+                    </div>
+                    <div className="svc-card-body">
+                      <div className="svc-card-top">
+                        <span className="svc-card-icon"><Icon /></span>
+                        <span className="svc-card-index">{n} / {String(SERVICES.length).padStart(2, "0")}</span>
+                      </div>
+                      <h3 className="svc-card-title">{title}</h3>
+                      <p className="svc-card-text">{text}</p>
+                      <ul className="svc-card-tags">
+                        {points.map((pt) => <li key={pt}>{pt}</li>)}
+                      </ul>
+                      {tech && (
+                        <ul className="svc-card-tech" aria-label={`${title} technologies`}>
+                          {tech.map((t) => <li key={t}>{t}</li>)}
+                        </ul>
+                      )}
+                    </div>
+                    <span className="svc-card-go" aria-hidden="true"><IconArrow size={18} /></span>
+                  </article>
+                );
+              })}
 
-                  <div className="svc-details">
-                    <p>{text}</p>
-                    <ul className="svc-tags">
-                      {points.map((pt) => <li key={pt}>{pt}</li>)}
-                    </ul>
-                  </div>
-
-                  {/* Slides in from the left on hover, vanishes instantly on leave */}
-                  <div className="svc-image" aria-hidden="true">
-                    <img src={img(`zyn-${image}`)} alt="" loading="lazy" />
-                  </div>
-                </article>
-              ))}
+              <article className="svc-card svc-card--cta reveal" style={{ gridArea: "cta" }}>
+                <div className="svc-card-body">
+                  <span className="svc-card-icon"><IconSpark size={20} /></span>
+                  <h3 className="svc-card-title">Not sure where to start?</h3>
+                  <p className="svc-card-text">Tell us your goal and we&apos;ll map the right mix of services for it.</p>
+                  <a href="#contact" className="roll-btn roll-btn--light">
+                    <span className="roll-btn-label">
+                      <span>Book a free call</span>
+                      <span aria-hidden="true">Book a free call</span>
+                    </span>
+                    <span className="roll-btn-icon" aria-hidden="true"><IconArrow size={16} /></span>
+                  </a>
+                </div>
+              </article>
             </div>
           </div>
         </section>
+
+        {/* ---------- Tech stack ---------- */}
+        <TechStack />
 
         {/* ---------- Process ---------- */}
         <section className="process">
@@ -528,19 +590,6 @@ export default function Home() {
 
         {/* ---------- CTA banner ---------- */}
         <CtaBanner />
-
-        {/* ---------- Marquee ---------- */}
-        <section className="marquee" aria-hidden="true">
-          <div className="marquee-track">
-            {[...Array(2)].map((_, k) => (
-              <div key={k} className="marquee-group">
-                {[...Array(4)].map((_, i) => (
-                  <span key={i}>Let&apos;s work together <IconSpark size={40} /></span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </section>
       </main>
 
       {/* ---------- Footer ---------- */}
@@ -548,12 +597,16 @@ export default function Home() {
         <div className="container">
           <div className="footer-cta">
             <h2>Have a project in mind?</h2>
-            <a href="mailto:hello@zynintell.com" className="btn btn-primary">hello@zynintell.com <IconArrow /></a>
+            <a href="mailto:arupmuet@gmail.com" className="btn btn-primary">arupmuet@gmail.com <IconArrow /></a>
           </div>
           <div className="footer-grid">
             <div>
               <Logo light />
               <p className="f-muted">A digital studio crafting brands, websites and products that grow.</p>
+              <a href={WHATSAPP.link} target="_blank" rel="noopener noreferrer" className="footer-phone">
+                <span className="footer-phone-icon"><IconWhatsApp size={16} /></span>
+                {WHATSAPP.display}
+              </a>
             </div>
             <div>
               <h4>Company</h4>
@@ -572,9 +625,15 @@ export default function Home() {
               </form>
             </div>
           </div>
+          <p className="footer-watermark" aria-hidden="true">
+            {"zynintell".split("").map((ch, i) => <span key={i}>{ch}</span>)}
+          </p>
           <div className="footer-bottom">
             <span>© {new Date().getFullYear()} Zynintell. All rights reserved.</span>
-            <span>Privacy · Terms</span>
+            <a href="#home" className="back-top" aria-label="Back to top">
+              <span className="back-top-label">Back to top</span>
+              <span className="back-top-icon"><IconArrowUp /></span>
+            </a>
           </div>
         </div>
       </footer>

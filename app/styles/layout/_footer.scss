@@ -25,7 +25,7 @@
     grid-template-columns: 1.4fr 1fr 1fr 1.4fr;
     gap: 40px;
 
-    > div > a:not(.logo) {
+    > div > a:not(.logo):not(.footer-phone) {
       display: block;
       color: $gray-2;
       margin-bottom: 10px;
@@ -112,4 +112,92 @@
     color: $white;
     cursor: pointer;
   }
+}
+
+// WhatsApp link under the company line
+.footer-phone {
+  @include flex-center(true);
+  gap: 10px;
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 17px;
+  color: $white;
+  transition: color .3s;
+
+  &-icon {
+    @include grid-center;
+    @include circle(36px);
+    background: #25d366;
+    color: $white;
+  }
+
+  &:hover { color: #25d366; }
+}
+
+// Giant faint brand watermark above the bottom bar
+.footer {
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-watermark {
+  position: relative;
+  z-index: 0;
+  // Letters spread evenly edge to edge across the full footer width
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 48px 0 -0.18em;
+  font-family: $font-primary;
+  font-weight: 700;
+  font-size: clamp(64px, 15vw, 230px);
+  line-height: .9;
+  user-select: none;
+  pointer-events: none;
+
+  span {
+    // Faint white that fades out towards the bottom
+    background: linear-gradient(180deg, rgba(255, 255, 255, .12) 0%, rgba(255, 255, 255, .02) 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @include mq(mobile) { margin-top: 32px; font-size: 15vw; }
+}
+
+// Bottom bar stays above the watermark's overlap
+.footer-bottom { position: relative; z-index: 1; }
+
+// Back-to-top button in the bottom bar (desktop/tablet only)
+.footer-bottom { align-items: center; }
+
+.back-top {
+  @include flex-center(true);
+  gap: 12px;
+  color: $gray-2;
+  font-family: $font-primary;
+  font-weight: 600;
+  font-size: 14px;
+  transition: color .3s;
+
+  &-icon {
+    @include grid-center;
+    @include circle(44px);
+    border: 1px solid rgba(255, 255, 255, .18);
+    color: $white;
+    transition: background .35s ease, border-color .35s ease, transform .45s $ease-spring;
+  }
+
+  &:hover {
+    color: $white;
+
+    .back-top-icon {
+      background: $primary;
+      border-color: $primary;
+      transform: translateY(-4px);
+    }
+  }
+
+  @include mq(mobile) { display: none; }
 }
